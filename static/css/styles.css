@@ -18,6 +18,7 @@
   --bs-red: #dc3545;
   --bs-orange: #fd7e14;
   --bs-yellow: #ffc107;
+  --bs-gold: #cfa62b;
   --bs-green: #198754;
   --bs-teal: #20c997;
   --bs-cyan: #0dcaf0;
@@ -3880,6 +3881,13 @@ textarea.form-control-lg {
   }
   .navbar-expand-sm .navbar-toggler {
     display: none;
+  }
+  .fixed-top {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    padding-top: 20px;
   }
   .navbar-expand-sm .offcanvas {
     position: static;
