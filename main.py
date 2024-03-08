@@ -15,25 +15,30 @@ from flask_login import login_user, current_user, logout_user, login_required
 import random
 import base64
 from cryptography.fernet import Fernet
-#external py files
-import user
-import clubs
+# #external py files
+# import user
+# import clubs
 
 app = Flask(__name__)
 #main page
 @app.route('/')
 def home():
     return render_template("home.html")
-@app.route('/login')
+
+@app.route('/login', methods=['GET','POST'])
 def login():
     return render_template("login.html")
-@app.route('/clubs')
+
+@app.route('/clubs', methods=['GET', 'POST'])
 def clubs():
-    
-    return render_template("clubs.html")
+    if request.method == 'GET':
+
+        return render_template("clubs.html")
+
 @app.route('/events')
 def events():
     pass
+
 @app.route('/my_clubs')
 def my_clubs():
     pass

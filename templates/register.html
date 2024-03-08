@@ -1,0 +1,51 @@
+{%extends "base.html"%}
+{%block title%}BT CLUB APP{%endblock%}
+{%set active_page = 'home'%}
+{%block content%}
+<!-- Page Content-->
+<!-- Header-->
+<header class="pt-5">
+    <br><br><br><br>
+    <div class="container px-lg-5 text-center">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+           <strong>{{ message }}</strong>
+           <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+            <div style="padding-left:30% ;padding-right:30%" class="m-2 rounded-3">
+                <form action="POST" action="/login">
+                    <h1 class="display-5 fw-bold">Register</h1>
+                    <br>
+                    <input type="email" class="form-control" id="floatingInput" placeholder="Email address" name="email" required>
+                    <br>
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" required>
+                    <br>
+                    <label>
+                        <input type="checkbox" value="remember-me"> Remember me
+                    </label>
+                    <br>
+                    <br>
+                    <button class="w-100 btn btn-lg btn-primary bg-dark" type="submit">Sign in</button>
+                    <br>
+                </form>
+                <br>
+                <a style="text-decoration:none;"  href="/register">Or Register Here</a>
+            </div>
+    </div>
+    <br>
+    <br>
+</header>
+<section class="pt-4">
+    <br>
+    <div class="container px-lg-5">
+        <!-- Page Features-->
+        <div class="row gx-lg-5">
+
+        </div>
+    </div>
+{%endblock%}

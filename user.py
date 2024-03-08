@@ -7,16 +7,14 @@ import secrets
 from flask_login import LoginManager, UserMixin
 from flask_mail import Mail
 from flask_mail import Message
-from flask_login import LoginManager, UserMixi
 #import app file will bring other imports in
-import app
+from __main__ import app
+
 #set up login database
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///library.db"
 login_manager = LoginManager(app)
 login_manager.login_view = 'login' #specify the login route
 login_manager.login_message = "Unauthorized access please log in!"
 login_manager.login_message_category = 'danger'
-
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465

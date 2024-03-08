@@ -1,12 +1,9 @@
-import app
+from __main__ import app
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc, asc
 import csv
 
-
 db = SQLAlchemy(app)
-
-
 
 class Clubs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
