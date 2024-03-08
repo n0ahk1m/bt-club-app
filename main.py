@@ -29,10 +29,13 @@ def home():
 def login():
     return render_template("login.html")
 
+@app.route('/register', methods=['GET','POST'])
+def register():
+    return render_template("register.html")
+
 @app.route('/clubs', methods=['GET', 'POST'])
 def clubs():
     if request.method == 'GET':
-
         return render_template("clubs.html")
 
 @app.route('/events')
