@@ -33,14 +33,19 @@ def login():
 def register():
     return render_template("register.html")
 
-@app.route('/clubs', methods=['GET', 'POST'])
-def clubs():
+@app.route('/allclubs', methods=['GET', 'POST'])
+def allclubs():
     if request.method == 'GET':
-        return render_template("clubs.html")
+        return render_template("allclubs.html")
 
-@app.route('/events')
-def events():
-    pass
+@app.route('/myclubs', methods=['GET', 'POST'])
+def myclubs():
+    if request.method == 'GET':
+        return render_template("myclubs.html")
+
+@app.route('/calendar')
+def calendar():
+    return render_template("calendar.html")
 
 @app.route('/my_clubs')
 def my_clubs():

@@ -10,6 +10,134 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+
+
+
+
+
+
+
+ /* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+/* Calendar CSS */
+
+.calendar {
+  margin: 4rem;
+  padding: 0;
+  list-style: none;
+  font-size: 1.4rem;
+}
+
+.calendar-day {
+  color: #fff;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.calendar-day:nth-child(7n+1)::before {
+  content: attr(data-week);
+  position: absolute;
+  color: #999;
+}
+
+.calendar-day::after {
+  content: attr(data-weekday);
+  position: absolute;
+  color: #999;
+}
+
+.calendar-day__content {
+  background: #4e8792;
+}
+
+.calendar-day--not-month .calendar-day__content {
+  opacity: .5;
+}
+
+.calendar-day--today .calendar-day__content {
+  background-color: #67c77c;
+}
+
+.calendar-day--entry .calendar-day__content {
+  background-color: #ab6381;
+}
+
+.calendar-day__number {
+  position: absolute;
+  top: .5rem;
+  left: .5rem;
+}
+
+@media screen and (max-width: 40rem) {
+  .calendar-day {
+    margin: 0 0 2px;
+  }
+
+  .calendar-day:nth-child(7n+1)::before {
+    left: 0;
+    right: 0;
+    bottom: calc(100% + .5rem);
+    display: block;
+    text-align: center;
+  }
+
+  .calendar-day::after {
+    right: calc(100% + .5rem);
+    top: .5rem;
+  }
+
+  .calendar-day--not-month {
+    display: none;
+  }
+
+  .calendar-day--begin-week {
+    margin-top: 3rem;
+  }
+
+  .calendar-day__content {
+    padding: 0 0 20%;
+  }
+}
+
+@media screen and (min-width: 40rem) {
+  .calendar {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .calendar-day {
+    flex-basis: calc(14.28571% - 2px);
+    margin: 1px;
+  }
+
+  .calendar-day:nth-child(7n+1)::before {
+    right: calc(100% + .5rem);
+    top: .5rem;
+  }
+
+  .calendar-day::after {
+    display: none;
+  }
+
+  .calendar-day:nth-child(-n+7)::after {
+    display: inline;
+    bottom: calc(100% + .2rem);
+    left: .5rem;
+  }
+
+  .calendar-day--not-month {
+    display: block;
+  }
+
+  .calendar-day--past .calendar-day__number {
+    opacity: .5;
+  }
+
+  .calendar-day__content {
+    padding-bottom: 100%;
+  }
+}
+
+ /* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
