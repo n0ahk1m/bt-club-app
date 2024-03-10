@@ -16,17 +16,17 @@ def create_tables():
            email VARCHAR UNIQUE,
            email_verification VARCHAR(255),
            password_hash VARCHAR(255),
-           is_verified BOOLEAN DEFAULT FALSE
+           is_verified BOOLEAN DEFAULT FALSE,
            is_admin BOOLEAN DEFAULT FALSE
            
            ) """,
-        """CREATE TABLE IF NOT EXISTS CLUBS (
+        """CREATE TABLE IF NOT EXISTS clubs (
             id INTEGER PRIMARY KEY,
             faculty_name VARCHAR(50),
             club_name VARCHAR(50) UNIQUE,
             club_description TEXT,
             meeting_location VARCHAR(50),
-            meeting_days VARCHAR(50),
+            meeting_days VARCHAR(50)
         )
         """
     ]

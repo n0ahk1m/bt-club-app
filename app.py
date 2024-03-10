@@ -12,7 +12,10 @@ from flask_login import login_user, current_user, logout_user, login_required
 import random
 import base64
 from cryptography.fernet import Fernet
-import user
+#external py modules
+from init.db_init import create_tables
+# import user
+from clubs import *
 
 app = Flask(__name__)
 #main page
@@ -22,9 +25,12 @@ def home():
 @app.route('/login')
 def login():
     return render_template("login.html")
-@app.route('/clubs')
+@app.route('/clubs', methods=['GET', 'POST'])
 def clubs():
-    pass
+    if request.method=='GET':
+        all_clubs = get_all_clubs()
+        return render_template("clubs.html", clubs=all_clubs)
+
 @app.route('/events')
 def events():
     pass
@@ -33,5 +39,9 @@ def my_clubs():
     pass
 
 if __name__ == "__main__":
+    #create the tables
+    create_tables()
+    #create the clubs list
+    initialize_clubs()
     app.secret_key = ""  # Change this to a secure ENCRYPTED key
     app.run(debug=True)
