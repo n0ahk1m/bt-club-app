@@ -1,10 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError
-import os, io
+import sqlite3
 from werkzeug.utils import secure_filename
 import csv
-from sqlalchemy import desc, asc
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
