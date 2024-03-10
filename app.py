@@ -22,21 +22,29 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return render_template("home.html")
+
 @app.route('/login')
 def login():
     return render_template("login.html")
+
+@app.route('/register', methods=['GET','POST'])
+def register():
+    return render_template("register.html")
+
 @app.route('/clubs', methods=['GET', 'POST'])
 def clubs():
     if request.method=='GET':
         all_clubs = get_all_clubs()
         return render_template("clubs.html", clubs=all_clubs)
 
-@app.route('/events')
-def events():
-    pass
-@app.route('/my_clubs')
-def my_clubs():
-    pass
+@app.route('/my_clubs', methods=['GET', 'POST'])
+def myclubs():
+    if request.method == 'GET':
+        return render_template("my_clubs.html")
+
+@app.route('/calendar')
+def calendar():
+    return render_template("calendar.html")
 
 if __name__ == "__main__":
     #create the tables
