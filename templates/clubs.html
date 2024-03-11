@@ -7,27 +7,21 @@
 <header class="pt-5">
     <br><br>
     <div class="container px-lg-5">
-        <table class="table table-hover">
-            <thead>
-              <th scope="col">Faculty Name</th>
-              <th scope="col">Club Name</th>
-              <th scope="col">Club Description</th>
-              <th scope="col">Club Meeting Location</th>
-              <th scope="col">Meeting Day(s)</th>
-            </thead>
-            <tbody>
-              {% for row in clubs %}
-              <tr>
-                  <td>{{ row[1] }}</td>
-                  <td>{{ row[2] }}</td>
-                  <td>{{ row[3] }}</td>
-                  <td>{{ row[4] }}</td>
-                  <td>{{ row[5] }}</td>
-                  <!-- Add more columns as needed -->
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+      {% for row in clubs %}
+        <div class="p-4 p-lg-5 bg-light rounded-3">
+            <img src="static\images\placeholder.png" style="margin-right:50px; float:right; width:300px; height:300px; border-radius:50%" alt="">
+            <div class="m-4 m-lg-5" style="width:60%">
+                <h1 class="display-5 fw-bold">{{ row[2] }}</h1>
+                <p class="fs-6">Advisor : {{ row[1] }} </p>
+                <p class="fs-6">Location : {{ row[4] }}</p>
+                <p class="fs-6">Club Dates : {{ row[5] }}</p>
+                <p class="fs-5">{{ row[3] }}</p><br>
+                <a class="btn btn-primary btn-lg bg-dark" href="#!">Join</a> 
+                <img src="" alt="" class="img-thumbnail"> 
+            </div>
+        </div>
+        <br><br>
+        {% endfor %}
     </div>
     <br><br>
 </header>
