@@ -3,8 +3,6 @@ import sqlite3
 from werkzeug.utils import secure_filename
 import csv
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
-import secrets
 from flask_mail import Mail
 from flask_mail import Message
 from flask_login import LoginManager, UserMixin
@@ -14,10 +12,12 @@ import base64
 from cryptography.fernet import Fernet
 #external py modules
 from init.db_init import create_tables
-# import user
-# from clubs import *
+from user import *
+from clubs import *
 
 app = Flask(__name__)
+#set mail 
+mail = Mail(app)
 #main page
 @app.route('/')
 def home():
@@ -29,7 +29,69 @@ def login():
 
 @app.route('/register', methods=['GET','POST'])
 def register():
+    if request.method == "POST":
+        # Get form data
+        name = request.form.get("name")
+        last_name = request.form.get("last_name")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+        # image_file = request.files.get("image")
+        # is_mfa_enabled = request.form.get("mfa")
+        # phoneNumber = request.form.get("phoneNumber")
+
+        # Validate form data (add your own validation logic)
+        if not (
+            name
+            and last_name
+            and email
+            and password
+            and confirm_password
+            # and image_file
+            # and accept_terms
+        ):
+            
+        # Handle invalid input
+            flash("Please fill in all fields.", "danger")
+            return render_template("register.html")
+        
+        #handle if existing user
+        # user = User.query.filter_by(email=email).first()
+        user = search_user(email)
+        print(user)
+
+        if user:
+            # Handle password mismatch
+            flash("User already exist! Try a different email", "danger")
+            return render_template("register.html")
+        if password != confirm_password:
+            # Handle password mismatch
+            flash("Passwords do not match.", "danger")
+            return render_template("register.html")
+
+        # Get image data
+        # image_data = image_file.read()
+
+        # Create a new user instance
+        new_user = User(None, name, last_name, email, set_password(password))
+            # image_data=image_data,
+            # email_verification_token=generate_verification_token(),
+            # is_mfa_enabled= True if is_mfa_enabled else False,
+            # phoneNumber = phoneNumber
+        register_user(new_user)
+        flash("Account created successfully! Please check your email to verify.", "success")
+        return redirect(url_for('login'))
     return render_template("register.html")
+
+# Send a Verification Email:
+# def send_verification_email(user):
+#     verification_link = (
+#         f"http://127.0.0.1:5000/verify_email/{user.email_verification_token}"
+#     )
+#     msg = Message("Verify Your Email", recipients=[user.email])
+#     msg.body = f"Click the following link to verify your email: {verification_link}"
+#     mail.send(msg)
+
 
 @app.route('/clubs', methods=['GET', 'POST'])
 def clubs():
@@ -51,5 +113,5 @@ if __name__ == "__main__":
     create_tables()
     #create the clubs list
     # initialize_clubs()
-    app.secret_key = ""  # Change this to a secure ENCRYPTED key
+    app.secret_key = "super_secret_key"  # Change this to a secure ENCRYPTED key
     app.run(debug=True)

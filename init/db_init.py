@@ -8,16 +8,16 @@ def create_tables():
     db.execute("DROP TABLE IF EXISTS clubs")
     db_master.commit()
     #the queries to create the user and clubs table
+    '''is_verified BOOLEAN DEFAULT FALSE,
+        email_verification VARCHAR(255),
+        is_admin BOOLEAN DEFAULT FALSE'''
     creation_queries = [
         """CREATE TABLE IF NOT EXISTS users (
            id INTEGER PRIMARY KEY,
            first_name VARCHAR(255) NOT NULL,
            last_name VARCHAR(255) NOT NULL,
            email VARCHAR UNIQUE,
-           email_verification VARCHAR(255),
-           password_hash VARCHAR(255),
-           is_verified BOOLEAN DEFAULT FALSE,
-           is_admin BOOLEAN DEFAULT FALSE
+           password_hash VARCHAR(255)
            
            ) """,
         """CREATE TABLE IF NOT EXISTS clubs (
@@ -35,3 +35,5 @@ def create_tables():
     db_master.commit()
     db.close()
     db_master.close()
+def create_admin():
+    pass
