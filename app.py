@@ -15,7 +15,7 @@ from cryptography.fernet import Fernet
 #external py modules
 from init.db_init import create_tables
 # import user
-from clubs import *
+# from clubs import *
 
 app = Flask(__name__)
 #main page
@@ -50,6 +50,6 @@ if __name__ == "__main__":
     #create the tables
     create_tables()
     #create the clubs list
-    initialize_clubs()
+    # initialize_clubs()
     app.secret_key = ""  # Change this to a secure ENCRYPTED key
     app.run(debug=True)
