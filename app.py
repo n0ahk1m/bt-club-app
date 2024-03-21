@@ -13,7 +13,7 @@ from cryptography.fernet import Fernet
 #external py modules
 from init.db_init import create_tables
 from user import *
-from clubs import *
+# from clubs import *
 
 app = Flask(__name__)
 #set mail 
@@ -23,8 +23,20 @@ mail = Mail(app)
 def home():
     return render_template("home.html")
 
-@app.route('/login')
+@app.route('/login', methods=['GET','POST'])
 def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        #replace query using sqlite3 instead of alchemy here ------------------------------------------
+        session['user_id'] =user.id
+        if user and user.check_password(password):
+            login_user(user)
+            flash("Logged in successfully!", "success")
+            return redirect(url_for('index'))
+        else:
+            flash("Invalid credentials!","danger")
+        return render_template("login.html")
     return render_template("login.html")
 
 @app.route('/register', methods=['GET','POST'])
@@ -60,8 +72,7 @@ def register():
         user = search_user(email)
         print(user)
 
-        if user:
-            # Handle password mismatch
+        if user == False:
             flash("User already exist! Try a different email", "danger")
             return render_template("register.html")
         if password != confirm_password:
@@ -112,6 +123,6 @@ if __name__ == "__main__":
     #create the tables
     create_tables()
     #create the clubs list
-    initialize_clubs()
+    # initialize_clubs()
     app.secret_key = "super_secret_key"  # Change this to a secure ENCRYPTED key
     app.run(debug=True)

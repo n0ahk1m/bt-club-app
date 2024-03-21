@@ -5,7 +5,7 @@
 <!-- Page Content-->
 <!-- Header-->
 <header class="pt-5">
-    <br><br><br><br>
+    <br><br>
     <div class="container px-lg-5 text-center">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -17,12 +17,12 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
+        <br><br>
             <div style="padding-left:30% ;padding-right:30%" class="m-2 rounded-3">
                 <form class="mx-1 mx-md-4" method="POST" enctype="multipart/form-data" action="/register">
                     
                     <h1 class="display-5 fw-bold">Register</h1>
                     <br>
-
                     <input type="text" class="form-control" placeholder="First Name" name="name" aria-describedby="basic-addon1" required>
                     <br>
                     <input type="text" class="form-control" placeholder="Last Name" name="last_name" aria-describedby="basic-addon1" required>
@@ -34,9 +34,11 @@
                     <input type="password" class="form-control" placeholder="Confirm password" name="confirm_password" aria-describedby="basic-addon1" required>
                     <br>
                     <br>
-                    <button class="w-100 btn btn-lg btn-primary bg-dark" type="submit">Sign in</button>
+                    <button class="w-100 btn btn-lg btn-primary bg-dark" type="submit">Register</button>
+                    <br>
                     <br>
                   </form>
+                  <a style="text-decoration:none;"  href="/login">Already Signed In? Login Here</a>
             </div>
     </div>
     <br>

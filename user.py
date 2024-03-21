@@ -47,6 +47,20 @@ def search_user(email):
     if not data:
         return False
     return True
+
+def search_user(email):
+    db = sqlite3.connect('db/database.db')
+    db_cursor = db.cursor()
+    db_cursor.execute(
+            #have to add the other parameters later
+                """SELECT * FROM users
+                WHERE email=?""",
+                (email,)
+            )
+    data = db_cursor.fetchall()
+    db.close()
+    return data
+
 # Generate a Verification Token:
 def generate_verification_token():
     return secrets.token_urlsafe(50)  # Adjust the token length as needed
