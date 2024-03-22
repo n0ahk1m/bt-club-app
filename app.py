@@ -13,25 +13,46 @@ from cryptography.fernet import Fernet
 #external py modules
 from init.db_init import create_tables
 from user import *
-# from clubs import *
+from clubs import *
 
 app = Flask(__name__)
 #set mail 
 mail = Mail(app)
 #main page
+
+#login manager
+login_manager = LoginManager(app)
+login_manager.login_view = 'login' #specify the login route
+login_manager.login_message = "Unauthorized access please log in!"
+login_manager.login_message_category = 'danger'
+
 @app.route('/')
 def home():
     return render_template("home.html")
-
+@login_manager.user_loader
+def load_user(user_id):
+    #just run the load user connection here
+    conn = sqlite3.connect('db/database.db')
+    curs = conn.cursor()
+    curs.execute("SELECT * from users where id = (?)",[user_id])
+    lu = curs.fetchone()
+    if lu is None:
+        return None
+    else:
+        return User(int(lu[0]), lu[1], lu[2], lu[3], lu[4])
+    
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
         #replace query using sqlite3 instead of alchemy here ------------------------------------------
-        session['user_id'] =user.id
-        if user and user.check_password(password):
+        user = search_user(email)
+        if user and check_password(password):
             login_user(user)
+            print(user)
+            #get the id of the user and use it as a session token variable
+            session['user_id'] = user[0]
             flash("Logged in successfully!", "success")
             return redirect(url_for('index'))
         else:
@@ -71,8 +92,7 @@ def register():
         # user = User.query.filter_by(email=email).first()
         user = search_user(email)
         print(user)
-
-        if user == False:
+        if user:
             flash("User already exist! Try a different email", "danger")
             return render_template("register.html")
         if password != confirm_password:
@@ -123,6 +143,6 @@ if __name__ == "__main__":
     #create the tables
     create_tables()
     #create the clubs list
-    # initialize_clubs()
+    initialize_clubs()
     app.secret_key = "super_secret_key"  # Change this to a secure ENCRYPTED key
     app.run(debug=True)

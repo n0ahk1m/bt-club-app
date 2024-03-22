@@ -33,20 +33,6 @@ def register_user(User):
     db.commit()
     db.close()
 
-def search_user(email):
-    db = sqlite3.connect('db/database.db')
-    db_cursor = db.cursor()
-    db_cursor.execute(
-            #have to add the other parameters later
-                """SELECT * FROM users
-                WHERE email=?""",
-                (email,)
-            )
-    data = db_cursor.fetchall()
-    db.close()
-    if not data:
-        return False
-    return True
 
 def search_user(email):
     db = sqlite3.connect('db/database.db')
@@ -57,7 +43,8 @@ def search_user(email):
                 WHERE email=?""",
                 (email,)
             )
-    data = db_cursor.fetchall()
+    data = db_cursor.fetchone()
+    print(data)
     db.close()
     return data
 
