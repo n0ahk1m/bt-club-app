@@ -48,18 +48,24 @@ def login():
         password = request.form.get("password")
         #replace query using sqlite3 instead of alchemy here ------------------------------------------
         user = search_user(email)
-        if user and check_password(password):
-            login_user(user)
-            print(user)
+        print(user[0][3])
+        if user and check_password(user[0][4], password):
+            print(user[0][0])
+            User = load_user(user[0][0])
+            login_user(User)
+            print(User)
             #get the id of the user and use it as a session token variable
             session['user_id'] = user[0]
             flash("Logged in successfully!", "success")
-            return redirect(url_for('index'))
+            return redirect(url_for('login'))
         else:
             flash("Invalid credentials!","danger")
         return render_template("login.html")
     return render_template("login.html")
 
+@app.route('/profile', methods=['GET','POST'])
+def profile():
+    return render_template('profile.html')
 @app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == "POST":

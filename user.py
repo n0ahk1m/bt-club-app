@@ -19,8 +19,8 @@ class User(UserMixin):
 def set_password(password):
         password_hash = generate_password_hash(password)
         return password_hash
-def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+def check_password(user_password_hash, password):
+        return check_password_hash(user_password_hash, password)
 
 def register_user(User):
     db = sqlite3.connect('db/database.db')
@@ -43,9 +43,9 @@ def search_user(email):
                 WHERE email=?""",
                 (email,)
             )
-    data = db_cursor.fetchone()
-    print(data)
+    data = db_cursor.fetchall()
     db.close()
+    print(data)
     return data
 
 # Generate a Verification Token:

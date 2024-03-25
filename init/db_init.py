@@ -4,7 +4,6 @@ def create_tables():
     db_master = sqlite3.connect('db/database.db')
     db = db_master.cursor()
     #just to make sure initalization does not get appended rather than a new thing being created
-    db.execute("DROP TABLE IF EXISTS users")
     db.execute("DROP TABLE IF EXISTS clubs")
     db_master.commit()
     #the queries to create the user and clubs table
