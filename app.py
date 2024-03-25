@@ -57,7 +57,7 @@ def login():
             #get the id of the user and use it as a session token variable
             session['user_id'] = user[0]
             flash("Logged in successfully!", "success")
-            return redirect(url_for('login'))
+            return redirect(url_for('home'))
         else:
             flash("Invalid credentials!","danger")
         return render_template("login.html")
