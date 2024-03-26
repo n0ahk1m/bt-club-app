@@ -4,21 +4,24 @@
 {%block content%}
 <!-- Page Content-->
 <!-- Header-->
-<header class="pt-5">
-    <br><br>
+<header class="pt-5 background-img no-after">
+    
     <div class="container px-lg-5 text-center">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
+        <br>
         <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
            <strong>{{ message }}</strong>
            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
         </div>
+        <br>
         {% endfor %}
         {% endif %}
         {% endwith %}
-        <br><br>
-            <div style="padding-left:30% ;padding-right:30%" class="m-2 rounded-3">
+        
+        <div class="card bg-light border-0 h-100 register">
+            <div class="m-2 rounded-3">
                 <form class="mx-1 mx-md-4" method="POST" enctype="multipart/form-data" action="/register">
                     
                     <h1 class="display-5 fw-bold">Register</h1>
@@ -40,16 +43,9 @@
                   </form>
                   <a style="text-decoration:none;"  href="/login">Already Signed In? Login Here</a>
             </div>
+        </div>
     </div>
     <br>
     <br>
 </header>
-<section class="pt-4">
-    <br>
-    <div class="container px-lg-5">
-        <!-- Page Features-->
-        <div class="row gx-lg-5">
-
-        </div>
-    </div>
 {%endblock%}

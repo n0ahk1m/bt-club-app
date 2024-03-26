@@ -4,28 +4,25 @@
 {%block content%}
 <!-- Page Content-->
 <!-- Header-->
+<div class="background-img">
 <header class="pt-5">
-    <br><br><br><br>
-    <div class="container px-lg-5">
+    <div class="title">
         <div class="p-4 p-lg-5 bg-light rounded-3">
-            <img src="static\images\TeterboroLogo.png" style="float:right" alt="">
+            <img src="static\images\TeterboroLogo.png" style="float:right; margin-right:30px; margin-top:30px" alt="">
             <div class="m-4 m-lg-5">
                 
                 <h1 class="display-5 fw-bold">Bergen Tech Club App</h1>
-                <p class="fs-4">Welcome to the Official Club Management Website for Bergen Tech! </p>
-                <a class="btn btn-primary btn-lg bg-dark" href="/login">Login</a>
+                <p class="fs-4" style="width:50%; margin-top:20px">Welcome to the Official Club Management Website for Bergen Tech! </p>
+                <a class="btn btn-primary btn-lg bg-dark" href="/login" style="opacity:1">Login</a>
             </div>
         </div>
     </div>
 </header>
-<section class="pt-4">
+<section style="background-color:rgba(255,255,255,0.9);">
     <h1 class="py-5 display-5 fw-bold text-center">Club Events</h1>
-    <br>
     <div class="container px-lg-5">
-
-        <img class="hidden" alt="preloading" />
         <div class="row gx-lg-5">
-            <div class="col-lg-6 col-xxl-4 mb-5">
+            <div class="col-lg-6 col-xxl-4 mb-5" >
                 <div class="card bg-light border-0 h-100">
                     <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
                         <div class="feature  text-white rounded-3 mb-4 mt-n4"><img src="static\images\placeholder.png" style="width:70px;height:70px;border-radius:10%;border:2px solid #555" alt=""></div>
@@ -80,6 +77,6 @@
                 </div>
             </div>
         </div>
-        <br>
     </div>
+</div>
 {%endblock%}

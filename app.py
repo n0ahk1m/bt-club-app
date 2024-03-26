@@ -148,7 +148,7 @@ def calendar():
 if __name__ == "__main__":
     #create the tables
     create_tables()
-    #create the clubs list
-    initialize_clubs()
+    # #create the clubs list
+    # initialize_clubs()
     app.secret_key = "super_secret_key"  # Change this to a secure ENCRYPTED key
     app.run(debug=True)
