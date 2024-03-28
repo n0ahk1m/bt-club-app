@@ -5,8 +5,26 @@
 <!-- Page Content-->
 <!-- Header-->
 <header class="pt-5">
+    
     <br><br>
     <div class="container px-lg-5">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+           <strong>{{ message }}</strong>
+           <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+       <form action="/clubs" method="POST">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="button-addon2" name="search_club">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
+        </div>
+       </form>
+          
       {% for row in clubs %}
         <div class="p-4 p-lg-5 bg-light rounded-3">
             <img src="static\images\placeholder.png" style="margin-right:50px; float:right; width:300px; height:300px; border-radius:50%" alt="">

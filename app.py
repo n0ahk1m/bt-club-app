@@ -34,6 +34,8 @@ login_manager.login_message_category = 'danger'
 @app.route('/')
 def home():
     return render_template("home.html")
+
+#load the user
 @login_manager.user_loader
 def load_user(user_id):
     #just run the load user connection here
@@ -70,15 +72,14 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        #replace query using sqlite3 instead of alchemy here ------------------------------------------
+        #query for the user
         user = search_user(email)
-        print(user[0][3])
         if user and check_password(user[0][4], password):
-            print(user[0][0])
+            #load user into an object
             User = load_user(user[0][0])
+            #login the user
             login_user(User)
-            print(User)
-            #get the id of the user and use it as a session token variable
+            #get the id of the user and use it as a session token variable (for profile)
             session['user_id'] = user[0]
             flash("Logged in successfully!", "success")
             return redirect(url_for('home'))
@@ -178,7 +179,14 @@ def clubs():
     if request.method=='GET':
         all_clubs = get_all_clubs()
         return render_template("clubs.html", clubs=all_clubs)
-
+    #need to adjust with a different POST request in order to add clubs to my clubs list.
+    elif request.method == 'POST':
+        club_query = request.form.get('search_club')
+        searched_club = search_clubs(club_query)
+        if searched_club == []:
+            flash('sorry, club not found.', 'warning')
+            return redirect(url_for('clubs'))
+        return render_template('clubs.html', clubs=searched_club)
 @app.route('/my_clubs', methods=['GET', 'POST'])
 def myclubs():
     if request.method == 'GET':

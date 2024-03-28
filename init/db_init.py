@@ -27,7 +27,7 @@ def create_tables():
             meeting_location VARCHAR(50),
             meeting_days VARCHAR(50)
         )
-        """
+        """,
     ]
     for create_query in creation_queries:
         db.execute(create_query)
