@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask_oauthlib.client import OAuth
 import sqlite3
 from werkzeug.utils import secure_filename
 import csv
@@ -14,8 +15,12 @@ from cryptography.fernet import Fernet
 from init.db_init import create_tables
 from user import *
 from clubs import *
+import os
 
 app = Flask(__name__)
+app.secret_key = os.urandom(12)
+
+oauth = OAuth(app)
 #set mail 
 mail = Mail(app)
 #main page
@@ -43,6 +48,25 @@ def load_user(user_id):
     
 @app.route('/login', methods=['GET','POST'])
 def login():
+    GOOGLE_CLIENT_ID = '954980088912-ukn276fifnqm5g5fncnptb9pnl3esmhs.apps.googleusercontent.com'
+    GOOGLE_CLIENT_SECRET = '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'
+
+    CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+    oauth.register(
+        name='google',
+        client_id=GOOGLE_CLIENT_ID,
+        client_secret=GOOGLE_CLIENT_SECRET,
+        server_metadata_url=CONF_URL,
+        client_kwargs={
+            'scope': 'openid email profile'
+        }
+    )
+
+    # Redirect to google_auth function
+    redirect_uri = url_for('google_auth', _external=True)
+    print(redirect_uri)
+    return oauth.google.authorize_redirect(redirect_uri)
+
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
@@ -63,9 +87,28 @@ def login():
         return render_template("login.html")
     return render_template("login.html")
 
+@app.route('/authorized')
+def authorized():
+    token = oauth.google.authorize_access_token()
+    user = oauth.google.parse_id_token(token,None)
+    google_user = User.query.filter_by(email=user.email).first()
+
+    # add new user to database
+    if not google_user:
+        google_user = User(email=user.email,name=user.given_name,lastname=user.family_name, picture=user.picture,admin=user.email in admins)
+        db.session.add(google_user)
+        db.session.commit()
+        print('new google user added')
+    else:
+        print('google user exist')
+    login_user(google_user)
+    # if the above check passes, then we know the user has the right credentials  
+    return redirect('/register')
+
 @app.route('/profile', methods=['GET','POST'])
 def profile():
     return render_template('profile.html')
+
 @app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == "POST":
