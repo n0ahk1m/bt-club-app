@@ -7,10 +7,21 @@
 <div class="background-img">
 <header class="pt-5">
     <div class="title">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <br>
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+           <strong>{{ message }}</strong>
+           <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <br>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
         <div class="p-4 p-lg-5 bg-light rounded-3">
-            <img src="static\images\TeterboroLogo.png" style="float:right; margin-right:30px; margin-top:30px" alt="">
-            <div class="m-4 m-lg-5">
-                
+            <img src="static\images\TeterboroLogo.png" style="float:right" alt="">
+            <div class="m-4 m-lg-5">                
                 <h1 class="display-5 fw-bold">Bergen Tech Club App</h1>
                 <p class="fs-4" style="width:50%; margin-top:20px">Welcome to the Official Club Management Website for Bergen Tech! </p>
                 <a class="btn btn-primary btn-lg bg-dark" href="/login" style="opacity:1">Login</a>
@@ -18,7 +29,7 @@
         </div>
     </div>
 </header>
-<section style="background-color:rgba(255,255,255,0.9);">
+<section style="background-color:rgba(255,255,255,0.9);border-top:5px solid #FFD700;">
     <h1 class="py-5 display-5 fw-bold text-center">Club Events</h1>
     <div class="container px-lg-5">
         <div class="row gx-lg-5">
