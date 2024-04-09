@@ -12,6 +12,12 @@ class Club():
         self.club_description = club_description
         self.meeting_location = meeting_location
         self.meeting_days = meeting_days
+#create my clubs class for the clubs the user adds
+class My_Clubs():
+    def __init__(self, id, user_id, clubs_id):
+        self.id = id
+        self.user_id = user_id
+        self.clubs_id = clubs_id
 #csv parsing functions
 def parse_csv_data(csv_file):
     reader = csv.reader(csv_file)
@@ -37,8 +43,21 @@ def add_csv_data_to_database(file):
         except Exception as e:
             db.rollback()
     db.close()
-        
-
+#need to pass user parameters of user id, club id, and later on if there is edit functionality?
+def add_club_to_user(user_id, club_name):
+    db = sqlite3.connect('db/database.db')
+    db_cursor = db.cursor()
+    #get the id of the club
+    db_cursor.execute("SELECT id FROM your_table WHERE club_name = ?", (club_name,))
+    #get the result
+    club_id = db_cursor.fetchone()[0]
+    #add to the my_clubs table
+    db_cursor.execute(
+                """INSERT INTO my_clubs
+                (user_id, club_id) VALUES (?,?)""",
+                (user_id, club_id)
+    )
+    db.close()
 #initialize official clubs using club list from official 2324 club list
 def initialize_clubs():
     current_directory = os.path.dirname(os.path.abspath(__file__))
