@@ -13,6 +13,12 @@
                 
                 <h1 class="display-5 fw-bold">Bergen Tech Club App</h1>
                 <p class="fs-4">Welcome to the Official Club Management Website for Bergen Tech! </p>
+                {%if session%}
+                <div><pre>{{pretty}}</pre></div>
+                {%else%}
+                <p><a href="{{url_for('login')}}">Login with Google</a></p>
+                {%endif%}
+                
                 <a class="btn btn-primary btn-lg bg-dark" href="/login">Login</a>
             </div>
         </div>
