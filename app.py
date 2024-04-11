@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
+from authlib.integrations.flask_client import OAuth
+import json
 import sqlite3
 from werkzeug.utils import secure_filename
 import csv
@@ -14,8 +16,60 @@ from cryptography.fernet import Fernet
 from init.db_init import create_tables
 from user import *
 from clubs import *
+import os
 
 app = Flask(__name__)
+app.secret_key = "SUPER_SECRET_KEY"  # Change this to a secure ENCRYPTED key
+
+CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+oauth = OAuth(app)
+google = oauth.register(
+    name='google',
+    client_id='954980088912-ukn276fifnqm5g5fncnptb9pnl3esmhs.apps.googleusercontent.com',
+    client_secret='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',
+    # authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    authorize_params_callback=None,
+    authorize_url_params=None,
+    # access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
+    access_token_params_callback=None,
+    access_token_method='POST',
+    refresh_token_url=None,
+    refresh_token_params=None,
+    refresh_token_params_callback=None,
+    redirect_uri='http://localhost:5000/login/callback',  # Local URI for callback
+    client_kwargs={'scope': 'openid email profile',
+                   'jwks_uri': 'https://www.googleapis.com/oauth2/v3/certs'
+                   },
+    server_metadata_url= 'https://accounts.google.com/.well-known/openid-configuration'
+)
+
+@app.route('/')
+def home():
+    return render_template("home.html")
+
+@app.route('/login')
+def login():
+    return google.authorize_redirect(redirect_uri=url_for('authorized', _external=True))
+
+
+@app.route('/logout')
+def logout():
+    session.pop('token', None)
+    return redirect(url_for('home'))
+
+
+@app.route('/login/callback')
+def authorized():
+    nonce = session.get('nonce')
+    if nonce is None:
+        token = google.authorize_access_token()
+        session['token'] = token
+        user = google.parse_id_token(token, nonce=nonce)
+        # Here you can use user to get user details.
+        return 'Logged in as: ' + user['email']
+
 #set mail 
 mail = Mail(app)
 #main page
@@ -26,9 +80,6 @@ login_manager.login_view = 'login' #specify the login route
 login_manager.login_message = "Unauthorized access please log in!"
 login_manager.login_message_category = 'danger'
 
-@app.route('/')
-def home():
-    return render_template("home.html")
 @login_manager.user_loader
 def load_user(user_id):
     #just run the load user connection here
@@ -41,28 +92,31 @@ def load_user(user_id):
     else:
         return User(int(lu[0]), lu[1], lu[2], lu[3], lu[4])
     
-@app.route('/login', methods=['GET','POST'])
-def login():
-    if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
-        #replace query using sqlite3 instead of alchemy here ------------------------------------------
-        user = search_user(email)
-        print(user[0][3])
-        if user and check_password(user[0][4], password):
-            print(user[0][0])
-            User = load_user(user[0][0])
-            login_user(User)
-            print(User)
-            #get the id of the user and use it as a session token variable
-            session['user_id'] = user[0]
-            flash("Logged in successfully!", "success")
-            return redirect(url_for('home'))
-        else:
-            flash("Invalid credentials!","danger")
-        return render_template("login.html")
-    return render_template("login.html")
+# @app.route('/login', methods=['GET','POST'])
+# def login():
+#     if request.method == "POST":
+#         email = request.form.get("email")
+#         password = request.form.get("password")
+#         #replace query using sqlite3 instead of alchemy here ------------------------------------------
+#         user = search_user(email)
+#         print(user[0][3])
+#         if user and check_password(user[0][4], password):
+#             print(user[0][0])
+#             User = load_user(user[0][0])
+#             login_user(User)
+#             print(User)
+#             #get the id of the user and use it as a session token variable
+#             session['user_id'] = user[0]
+#             flash("Logged in successfully!", "success")
+#             return redirect(url_for('home'))
+#         else:
+#             flash("Invalid credentials!","danger")
+#         return render_template("login.html")
+#     return render_template("login.html")
 
+@app.route('/profile', methods=['GET','POST'])
+def profile():
+    return render_template('profile.html')
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -146,7 +200,6 @@ def calendar():
 if __name__ == "__main__":
     #create the tables
     create_tables()
-    # #create the clubs list
-    # initialize_clubs()
-    app.secret_key = "super_secret_key"  # Change this to a secure ENCRYPTED key
-    app.run(debug=True)
+    #create the clubs list
+    initialize_clubs()
+    app.run(host="localhost", port=5000, debug=True)
