@@ -27,11 +27,11 @@ google = oauth.register(
     name='google',
     client_id='954980088912-ukn276fifnqm5g5fncnptb9pnl3esmhs.apps.googleusercontent.com',
     client_secret='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',
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    # authorize_url='https://accounts.google.com/o/oauth2/auth',
     authorize_params=None,
     authorize_params_callback=None,
     authorize_url_params=None,
-    access_token_url='https://accounts.google.com/o/oauth2/token',
+    # access_token_url='https://accounts.google.com/o/oauth2/token',
     access_token_params=None,
     access_token_params_callback=None,
     access_token_method='POST',
@@ -39,7 +39,10 @@ google = oauth.register(
     refresh_token_params=None,
     refresh_token_params_callback=None,
     redirect_uri='http://localhost:5000/login/callback',  # Local URI for callback
-    client_kwargs={'scope': 'openid email profile'},
+    client_kwargs={'scope': 'openid email profile',
+                   'jwks_uri': 'https://www.googleapis.com/oauth2/v3/certs'
+                   },
+    server_metadata_url= 'https://accounts.google.com/.well-known/openid-configuration'
 )
 
 @app.route('/')
@@ -59,11 +62,13 @@ def logout():
 
 @app.route('/login/callback')
 def authorized():
-    token = google.authorize_access_token()
-    session['token'] = token
-    user = google.parse_id_token(token)
-    # Here you can use user to get user details.
-    return 'Logged in as: ' + user['email']
+    nonce = session.get('nonce')
+    if nonce is None:
+        token = google.authorize_access_token()
+        session['token'] = token
+        user = google.parse_id_token(token, nonce=nonce)
+        # Here you can use user to get user details.
+        return 'Logged in as: ' + user['email']
 
 #set mail 
 mail = Mail(app)
@@ -197,4 +202,4 @@ if __name__ == "__main__":
     create_tables()
     #create the clubs list
     initialize_clubs()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="localhost", port=5000, debug=True)
