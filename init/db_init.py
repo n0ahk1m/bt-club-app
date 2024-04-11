@@ -26,8 +26,13 @@ def create_tables():
             club_description TEXT,
             meeting_location VARCHAR(50),
             meeting_days VARCHAR(50)
+        ) """,
+        """CREATE TABLE IF NOT EXISTS my_clubs (
+            id INTEGER PRIMARY KEY,
+            user_id INTEGER FOREIGN KEY (users_id),
+            club_id INTEGER FOREIGN KEY (clubs_id)
         )
-        """
+        """,
     ]
     for create_query in creation_queries:
         db.execute(create_query)
