@@ -1,0 +1,24 @@
+{%extends "base.html"%}
+{%block title%}BT CLUB APP{%endblock%}
+{%set active_page = 'login'%}
+{%block content%}
+<!-- Page Content-->
+<!-- Header-->
+<header class="pt-5 background-img">
+    <div class="container px-lg-5 text-center">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <br>
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+           <strong>{{ message }}</strong>
+           <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <br>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+    
+</header>
+{%endblock%}
