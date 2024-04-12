@@ -65,11 +65,28 @@ def authorized():
     nonce = session.get('nonce')
     if nonce is None:
         token = google.authorize_access_token()
+        #do i need this???
+        user = google.parse_id_token(token, nonce=None)
         session['token'] = token
-        user = google.parse_id_token(token, nonce=nonce)
+        #check if the user exists
+        google_user = search_user(user.email)
+        print(google_user)
+        #load a user if it exists
+        
         # Here you can use user to get user details.
-        return 'Logged in as: ' + user['email']
-
+        if not google_user:
+            new_user = User(None, user.given_name, user.family_name, user.email)
+            register_user(new_user)
+            print("new user added")
+            flash("Account created successfully! Please check your email to verify.", "success")
+            return redirect(url_for('login'))
+        #add user to user object (id!) with session id token
+        else:
+            print("user exists")
+        User = load_user(google_user[0][0])
+        login_user(User)
+        flash("Logged in successfully!", "success")
+        return redirect(url_for('home'))
 #set mail 
 mail = Mail(app)
 #main page
