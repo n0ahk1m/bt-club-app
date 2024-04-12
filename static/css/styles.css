@@ -7992,6 +7992,10 @@ textarea.form-control-lg {
   padding-top: 8rem !important;
 }
 
+.pt-6 {
+  padding-top: 4rem !important;
+}
+
 .pe-0 {
   padding-right: 0 !important;
 }
@@ -11619,4 +11623,33 @@ textarea.form-control-lg {
   padding-bottom:5%;
   padding-top:5%; 
   opacity:0.9
+}
+
+.sidebar {
+  margin-top: 0;
+  padding: 0;
+  width: 200px;
+  background-color: rgb(33, 37, 41) ;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+  z-index:1;
+  border-right:3px solid #FFD700
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  padding: 16px;
+  text-decoration: none;
+}
+ 
+.sidebar a.active {
+  background-color: #FFD700;
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
 }
