@@ -15,9 +15,7 @@ def create_tables():
            id INTEGER PRIMARY KEY,
            first_name VARCHAR(255) NOT NULL,
            last_name VARCHAR(255) NOT NULL,
-           email VARCHAR UNIQUE,
-           password_hash VARCHAR(255)
-           
+           email VARCHAR UNIQUE
            ) """,
         """CREATE TABLE IF NOT EXISTS clubs (
             id INTEGER PRIMARY KEY,
@@ -26,8 +24,15 @@ def create_tables():
             club_description TEXT,
             meeting_location VARCHAR(50),
             meeting_days VARCHAR(50)
+        ) """,
+        """CREATE TABLE IF NOT EXISTS my_clubs (
+            id INTEGER PRIMARY KEY,
+            user_id INTEGER,
+            club_id INTEGER,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (club_id) REFERENCES clubs(id)
         )
-        """
+        """,
     ]
     for create_query in creation_queries:
         db.execute(create_query)

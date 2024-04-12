@@ -27,8 +27,8 @@ def register_user(User):
     db_cursor = db.cursor()
     db_cursor.execute(
                 """INSERT INTO users
-                (first_name, last_name, email, password_hash) VALUES (?,?,?,?)""",
-                (User.first_name, User.last_name, User.email, User.password_hash)
+                (first_name, last_name, email) VALUES (?,?,?)""",
+                (User.first_name, User.last_name, User.email)
             )
     db.commit()
     db.close()
