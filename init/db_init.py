@@ -5,6 +5,8 @@ def create_tables():
     db = db_master.cursor()
     #just to make sure initalization does not get appended rather than a new thing being created
     db.execute("DROP TABLE IF EXISTS clubs")
+    db.execute("DROP TABLE IF EXISTS users")
+    db.execute("DROP TABLE IF EXISTS my_clubs")
     db_master.commit()
     #the queries to create the user and clubs table
     '''is_verified BOOLEAN DEFAULT FALSE,
@@ -14,7 +16,7 @@ def create_tables():
         """CREATE TABLE IF NOT EXISTS users (
            id INTEGER PRIMARY KEY,
            first_name VARCHAR(255) NOT NULL,
-           last_name VARCHAR(255) NOT NULL,
+           last_name VARCHAR(255) DEFAULT NULL,
            email VARCHAR UNIQUE
            ) """,
         """CREATE TABLE IF NOT EXISTS clubs (

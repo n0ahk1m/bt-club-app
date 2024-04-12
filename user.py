@@ -7,13 +7,12 @@ import secrets
 class User(UserMixin):
 #initialize club object with its parameters
     #future parameters: google classroom code(?)
-    def __init__(self, id, first_name, last_name, email, password_hash):
+    def __init__(self, id, first_name, last_name, email):
         self.id = id
         self.first_name = first_name
         self.last_name = last_name
         self.email = email 
         # self.email_verification_token = ""
-        self.password_hash = password_hash
         # self.is_verified = False
         # self.is_admin = False
 def set_password(password):
