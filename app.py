@@ -15,6 +15,7 @@ from cryptography.fernet import Fernet
 #external py modules
 from init.db_init import create_tables
 from user import *
+from user import User
 from clubs import *
 import os
 
@@ -57,6 +58,8 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('token', None)
+    logout_user()
+    flash("successfully logged out.", "success")
     return redirect(url_for('home'))
 
 
@@ -74,8 +77,9 @@ def authorized():
         #load a user if it exists
         
         # Here you can use user to get user details.
-        if not google_user:
+        if google_user==[]:
             new_user = User(None, user.given_name, user.family_name, user.email)
+            print(new_user)
             register_user(new_user)
             print("new user added")
             flash("Account created successfully! Please check your email to verify.", "success")
@@ -83,8 +87,10 @@ def authorized():
         #add user to user object (id!) with session id token
         else:
             print("user exists")
-        User = load_user(google_user[0][0])
-        login_user(User)
+        GOOGLE_User = load_user(google_user[0][0])
+        #save the id of the user in a session variable
+        session['id'] = google_user[0][0]
+        login_user(GOOGLE_User)
         flash("Logged in successfully!", "success")
         return redirect(url_for('home'))
 #set mail 
@@ -107,7 +113,7 @@ def load_user(user_id):
     if lu is None:
         return None
     else:
-        return User(int(lu[0]), lu[1], lu[2], lu[3], lu[4])
+        return User(int(lu[0]), lu[1], lu[2], lu[3])
     
 # @app.route('/login', methods=['GET','POST'])
 # def login():
@@ -204,11 +210,39 @@ def clubs():
     if request.method=='GET':
         all_clubs = get_all_clubs()
         return render_template("clubs.html", clubs=all_clubs)
+@app.route('/join_club/<club_name>', methods=['GET', 'POST'])
+def join_club(club_name):
+    #search for the club by club name
+    club = search_clubs(club_name)
+    #get the club id by the club
+    club_id = club[0][0]
+    #get the user id in the form of a session variable
+    user_id = session.get('id')
+    #need to add this
+    if user_club_exists(user_id, club_id):
+        flash("already added this club!", "warning")
+        return redirect(url_for('clubs'))
+    add_club_to_user(user_id, club_id)
+    flash("Added club!", "success")
+    return redirect(url_for('clubs'))
 
-@app.route('/my_clubs', methods=['GET', 'POST'])
+@login_required
+@app.route('/dashboard', methods=['GET', 'POST'])
 def myclubs():
     if request.method == 'GET':
-        return render_template("my_clubs.html")
+        #get user_id 
+        user_id = session.get('id')
+        ### HIGHLY INEFFICIENT
+        #need to get all the user's clubs
+        user_clubs = get_user_clubs(user_id)
+        user_clubs_name = []
+        print(user_clubs)
+        #get the names of the clubs specified by the club id
+        for i in range(len(user_clubs)):
+            club = search_club_by_id(user_clubs[i][2])[0][2]
+            user_clubs_name.append(club)
+        print(user_clubs_name)
+        return render_template("dashboard.html", user_clubs = user_clubs_name)
 
 @app.route('/calendar')
 def calendar():

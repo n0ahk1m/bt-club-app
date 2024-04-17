@@ -64,22 +64,6 @@ def get_all_clubs():
     db.close()
     return data
 
-#need to pass user parameters of user id, club id, and later on if there is edit functionality?
-def add_club_to_user(user_id, club_name):
-    db = sqlite3.connect('db/database.db')
-    db_cursor = db.cursor()
-    #get the id of the club
-    db_cursor.execute("SELECT id FROM your_table WHERE club_name = ?", (club_name,))
-    #get the result
-    club_id = db_cursor.fetchone()[0]
-    #add to the my_clubs table
-    db_cursor.execute(
-                """INSERT INTO my_clubs
-                (user_id, club_id) VALUES (?,?)""",
-                (user_id, club_id)
-    )
-    db.close()
-
 #search for club by name
 def search_clubs(name):
     #db intialization
@@ -87,6 +71,52 @@ def search_clubs(name):
     db_cursor = db.cursor() 
     #prepared statement to prevent sql injection    
     db_cursor.execute("SELECT * FROM clubs WHERE club_name LIKE ?", (name,))
+    data = db_cursor.fetchall()
+    db.close()
+    return data
+
+def search_club_by_id(id):  
+    #db intialization
+    db = sqlite3.connect('db/database.db')
+    db_cursor = db.cursor() 
+    #prepared statement to prevent sql injection    
+    db_cursor.execute("SELECT * FROM clubs WHERE id = ?", (id,))
+    data = db_cursor.fetchall()
+    db.close()
+    return data
+
+##### USER CLUB STUFF
+#need to pass user parameters of user id, club id, and later on if there is edit functionality?
+def add_club_to_user(user_id, club_id):
+    print(user_id, club_id)
+    db = sqlite3.connect('db/database.db')
+    db_cursor = db.cursor()
+    #add to the my_clubs table
+    try: 
+        db_cursor.execute(
+                    """INSERT INTO my_clubs
+                    (user_id, club_id) VALUES (?,?)""",
+                    (user_id, club_id)
+        )
+        db.commit()
+    except Exception as e:
+        db.rollback()
+    db.close()
+
+def user_club_exists(user_id, club_id):
+    db = sqlite3.connect('db/database.db')
+    db_cursor = db.cursor()
+    #search for my_clubs where user_id is the user_id specified
+    db_cursor.execute("SELECT * FROM my_clubs WHERE user_id = ? AND club_id = ?", (user_id, club_id,))
+    data = db_cursor.fetchall()
+    db.close()
+    return data 
+
+def get_user_clubs(user_id):
+    db = sqlite3.connect('db/database.db')
+    db_cursor = db.cursor()
+    #search for my_clubs where user_id is the user_id specified
+    db_cursor.execute("SELECT * FROM my_clubs WHERE user_id = ?", (user_id,))
     data = db_cursor.fetchall()
     db.close()
     return data
