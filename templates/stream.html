@@ -1,0 +1,17 @@
+{%extends "base.html"%}
+{%block title%}BT CLUB APP{%endblock%}
+{%set active_page = 'stream'%}
+{%block content%}
+
+{% if ownership %}
+<form action="{{ url_for('stream', club_name=club_name) }}" method="post">
+    <label for="message">Enter your message:</label><br>
+    <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
+    <input type="submit" value="Submit">
+</form>
+{% endif %}
+<h1>{{club_name}}</h1>
+{% for message in messages %}
+    {{ message }}
+{% endfor %}
+{%endblock%}

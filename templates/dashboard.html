@@ -18,7 +18,7 @@
                 <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                     {% for club_name in user_clubs%}
                     <li class="nav-item py-3">
-                        <a href="#" class="nav-link link-light text-start px-1">
+                        <a href="{{ url_for('stream', club_name=club_name) }}" class="nav-link link-light text-start px-1">
                         <span class="text-start ms-1 d-none d-sm-inline">{{club_name}}</span>
                         </a>
                     </li>
