@@ -53,6 +53,10 @@ def initialize_clubs():
     with open(csv_file_path, 'r') as file:
         add_csv_data_to_database(file)
 
+#initialize teacher owners
+def initialize_teachers():
+    pass
+
 #get all clubs by a sql query
 def get_all_clubs():
     #db intialization
@@ -118,5 +122,27 @@ def get_user_clubs(user_id):
     #search for my_clubs where user_id is the user_id specified
     db_cursor.execute("SELECT * FROM my_clubs WHERE user_id = ?", (user_id,))
     data = db_cursor.fetchall()
+    db.close()
+    return data
+
+##TEMPORARY FOR DEMO! DELETE BC VERY BAD!
+def make_jake_club_owner():
+    db = sqlite3.connect('db/database.db')
+    db_cursor = db.cursor()
+    #search for my_clubs where owner_id is the user_id specified
+    db_cursor.execute("INSERT INTO my_clubs (owner_id) VALUES (?)", (1,))
+    db.commit()
+    db.close()
+
+
+# check if you are club owner of a specific club
+def is_club_owner(user_id, club_id):
+    db = sqlite3.connect('db/database.db')
+    db_cursor = db.cursor()
+    #search for my_clubs where owner_id is the user_id specified
+    db_cursor.execute("SELECT * FROM my_clubs WHERE owner_id = ?", (user_id,))
+    data = db_cursor.fetchall()
+    print(data)
+    print(user_id)
     db.close()
     return data

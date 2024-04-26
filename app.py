@@ -17,6 +17,7 @@ from init.db_init import create_tables
 from user import *
 from user import User
 from clubs import *
+from messages import *
 import os
 
 app = Flask(__name__)
@@ -50,6 +51,7 @@ google = oauth.register(
 def home():
     return render_template("home.html")
 
+### LOGIN FUNCTIONALITIES
 @app.route('/login')
 def login():
     return google.authorize_redirect(redirect_uri=url_for('authorized', _external=True))
@@ -114,28 +116,7 @@ def load_user(user_id):
         return None
     else:
         return User(int(lu[0]), lu[1], lu[2], lu[3])
-    
-# @app.route('/login', methods=['GET','POST'])
-# def login():
-#     if request.method == "POST":
-#         email = request.form.get("email")
-#         password = request.form.get("password")
-#         #replace query using sqlite3 instead of alchemy here ------------------------------------------
-#         user = search_user(email)
-#         print(user[0][3])
-#         if user and check_password(user[0][4], password):
-#             print(user[0][0])
-#             User = load_user(user[0][0])
-#             login_user(User)
-#             print(User)
-#             #get the id of the user and use it as a session token variable
-#             session['user_id'] = user[0]
-#             flash("Logged in successfully!", "success")
-#             return redirect(url_for('home'))
-#         else:
-#             flash("Invalid credentials!","danger")
-#         return render_template("login.html")
-#     return render_template("login.html")
+
 
 @app.route('/profile', methods=['GET','POST'])
 def profile():
@@ -192,25 +173,18 @@ def register():
             # phoneNumber = phoneNumber
         register_user(new_user)
         flash("Account created successfully! Please check your email to verify.", "success")
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     return render_template("register.html")
 
-# Send a Verification Email:
-# def send_verification_email(user):
-#     verification_link = (
-#         f"http://127.0.0.1:5000/verify_email/{user.email_verification_token}"
-#     )
-#     msg = Message("Verify Your Email", recipients=[user.email])
-#     msg.body = f"Click the following link to verify your email: {verification_link}"
-#     mail.send(msg)
-
-
+### CLUB FUNCTIONALITIES
 @app.route('/clubs', methods=['GET', 'POST'])
 def clubs():
     if request.method=='GET':
         all_clubs = get_all_clubs()
         return render_template("clubs.html", clubs=all_clubs)
+
 @app.route('/join_club/<club_name>', methods=['GET', 'POST'])
+@login_required  
 def join_club(club_name):
     #search for the club by club name
     club = search_clubs(club_name)
@@ -226,8 +200,9 @@ def join_club(club_name):
     flash("Added club!", "success")
     return redirect(url_for('clubs'))
 
-@login_required
+
 @app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
 def myclubs():
     if request.method == 'GET':
         #get user_id 
@@ -244,13 +219,51 @@ def myclubs():
         print(user_clubs_name)
         return render_template("dashboard.html", user_clubs = user_clubs_name)
 
+### STREAM OF THE CLASSROOM
+
+@app.route('/stream/<club_name>', methods=['GET','POST'])
+@login_required
+def stream(club_name):
+    #get the id of the club
+    club_id = search_clubs(club_name)[0][0]
+    #check if the user is an owner of the club
+    user_id = session.get('id')
+    #ownership of club CHANGE THIS LATER!!!!
+    ownership = False
+    if request.method == 'GET':
+        #determine ownership of club
+        if is_club_owner(user_id, club_id):
+            ownership = True
+        #get the messages of the club to get ready to output
+        messages = get_messages(club_id)
+        #need club name just in case of routing?
+        return render_template('stream.html', ownership=ownership, messages=messages, club_name=club_name)
+    #for now can only make announcements
+    #if the user is an owner, allow for the post announcements functionality
+    elif request.method == 'POST':
+        #get the text from the textarea form?
+        #parse it and add it to the relational text database 
+        message = request.form.get("message")
+        #get the current time
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        #post the message into the database
+        post_message(user_id, club_id, message, current_time)
+        #redirect to the stream and flash that post has been successful (? hopefully the posts are there? )
+        return redirect(url_for('stream', club_name=club_name))
+    
+
+
+
 @app.route('/calendar')
 def calendar():
     return render_template("calendar.html")
+
 
 if __name__ == "__main__":
     #create the tables
     create_tables()
     #create the clubs list
     initialize_clubs()
+    #make jake admiN!
+    make_jake_club_owner()
     app.run(host="localhost", port=5000, debug=True)
