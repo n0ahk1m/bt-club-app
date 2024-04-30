@@ -7,6 +7,7 @@ def create_tables():
     db.execute("DROP TABLE IF EXISTS clubs")
     db.execute("DROP TABLE IF EXISTS users")
     db.execute("DROP TABLE IF EXISTS my_clubs")
+    db.execute("DROP TABLE IF EXISTS messages")
     db_master.commit()
     #the queries to create the user and clubs table
     '''is_verified BOOLEAN DEFAULT FALSE,
@@ -17,7 +18,8 @@ def create_tables():
            id INTEGER PRIMARY KEY,
            first_name VARCHAR(255) NOT NULL,
            last_name VARCHAR(255) DEFAULT NULL,
-           email VARCHAR UNIQUE
+           email VARCHAR UNIQUE,
+           isAdmin DEFAULT NULL
            ) """,
         """CREATE TABLE IF NOT EXISTS clubs (
             id INTEGER PRIMARY KEY,
@@ -31,10 +33,23 @@ def create_tables():
             id INTEGER PRIMARY KEY,
             user_id INTEGER,
             club_id INTEGER,
+            owner_id INTEGER,
             FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (club_id) REFERENCES clubs(id)
+            FOREIGN KEY (club_id) REFERENCES clubs(id),
+            FOREIGN KEY (owner_id) REFERENCES users(id)
         )
         """,
+        """CREATE TABLE IF NOT EXISTS messages (
+            id INTEGER PRIMARY KEY,
+            message_content TEXT,
+            message_date TEXT,
+            user_id INTEGER,
+            club_id INTEGER,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (club_id) REFERENCES clubs(id)
+
+        )
+        """
     ]
     for create_query in creation_queries:
         db.execute(create_query)
