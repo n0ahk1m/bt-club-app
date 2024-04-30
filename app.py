@@ -39,7 +39,7 @@ google = oauth.register(
     refresh_token_url=None,
     refresh_token_params=None,
     refresh_token_params_callback=None,
-    redirect_uri='http://localhost:5000/login/callback',  # Local URI for callback
+    # redirect_uri='/login/callback',  # Local URI for callback
     client_kwargs={'scope': 'openid email profile',
                    'jwks_uri': 'https://www.googleapis.com/oauth2/v3/certs'
                    },
@@ -75,7 +75,9 @@ def authorized():
         google_user = search_user(user.email)
         print(google_user)
         #load a user if it exists
-        
+
+        # check if admin
+
         # Here you can use user to get user details.
         if google_user==[]:
             new_user = User(None, user.given_name, user.family_name, user.email)
@@ -83,7 +85,7 @@ def authorized():
             register_user(new_user)
             print("new user added")
             flash("Account created successfully! Please check your email to verify.", "success")
-            return redirect(url_for('login'))
+            return redirect(url_for('home'))
         #add user to user object (id!) with session id token
         else:
             print("user exists")
@@ -210,6 +212,7 @@ def clubs():
     if request.method=='GET':
         all_clubs = get_all_clubs()
         return render_template("clubs.html", clubs=all_clubs)
+    
 @app.route('/join_club/<club_name>', methods=['GET', 'POST'])
 def join_club(club_name):
     #search for the club by club name
