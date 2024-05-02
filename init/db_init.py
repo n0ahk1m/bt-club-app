@@ -47,8 +47,16 @@ def create_tables():
             club_id INTEGER,
             FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (club_id) REFERENCES clubs(id)
-
         )
+        """
+        ,
+        """CREATE TABLE IF NOT EXISTS attendance (
+            id INTEGER PRIMARY KEY,
+            user_id INTEGER,
+            club_id INTEGER,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (club_id) REFERENCES clubs(id)
+        )        
         """
     ]
     for create_query in creation_queries:

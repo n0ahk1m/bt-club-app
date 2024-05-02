@@ -29,11 +29,9 @@ google = oauth.register(
     name='google',
     client_id='954980088912-ukn276fifnqm5g5fncnptb9pnl3esmhs.apps.googleusercontent.com',
     client_secret='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',
-    # authorize_url='https://accounts.google.com/o/oauth2/auth',
     authorize_params=None,
     authorize_params_callback=None,
     authorize_url_params=None,
-    # access_token_url='https://accounts.google.com/o/oauth2/token',
     access_token_params=None,
     access_token_params_callback=None,
     access_token_method='POST',
@@ -70,31 +68,31 @@ def authorized():
     nonce = session.get('nonce')
     if nonce is None:
         token = google.authorize_access_token()
-        #do i need this???
+
+        #get the user data from google
         user = google.parse_id_token(token, nonce=None)
         session['token'] = token
+
         #check if the user exists
-        google_user = search_user(user.email)
-        print(google_user)
-        #load a user if it exists
-        
-        # Here you can use user to get user details.
-        if google_user==[]:
+        google_user_data = search_user(user.email)
+
+        #register new user
+        if google_user_data==[]:
             new_user = User(None, user.given_name, user.family_name, user.email)
-            print(new_user)
             register_user(new_user)
-            print("new user added")
-            flash("Account created successfully! Please check your email to verify.", "success")
-            return redirect(url_for('login'))
+
+            google_user_data = search_user(user.email)
+        
         #add user to user object (id!) with session id token
-        else:
-            print("user exists")
-        GOOGLE_User = load_user(google_user[0][0])
+        google_user_object = load_user(google_user_data[0][0])
+
         #save the id of the user in a session variable
-        session['id'] = google_user[0][0]
-        login_user(GOOGLE_User)
+        session['id'] = google_user_data[0][0]
+
+        login_user(google_user_object)
         flash("Logged in successfully!", "success")
         return redirect(url_for('home'))
+
 #set mail 
 mail = Mail(app)
 #main page
@@ -250,14 +248,15 @@ def stream(club_name):
         post_message(user_id, club_id, message, current_time)
         #redirect to the stream and flash that post has been successful (? hopefully the posts are there? )
         return redirect(url_for('stream', club_name=club_name))
-    
-
-
 
 @app.route('/calendar')
 def calendar():
     return render_template("calendar.html")
 
+@app.route('/admin')
+@login_required
+def admin():
+    return render_template("admin.html")
 
 if __name__ == "__main__":
     #create the tables

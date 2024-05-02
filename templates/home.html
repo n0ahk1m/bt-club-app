@@ -5,7 +5,7 @@
 <!-- Page Content-->
 <!-- Header-->
 <div class="background-img">
-<header class="pt-5">
+<header class="pt-5" style="min-height: 100vh;">
     <div class="title">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -23,13 +23,12 @@
             <img src="static\images\TeterboroLogo.png" style="float:right" alt="">
             <div class="m-4 m-lg-5">                
                 <h1 class="display-5 fw-bold">Bergen Tech Club App</h1>
-                <p class="fs-4" style="width:50%; margin-top:20px">Welcome to the Official Club Management Website for Bergen Tech! </p>
+                <p class="fs-4" style="width:50%; margin-top:20px">Welcome to the Official Club Management Website for Bergen Tech! </p> <br>
                 {%if current_user.is_authenticated%}
                 <a class="btn btn-primary btn-lg bg-dark" href="/dashboard" style="opacity:1">My Clubs</a>
                 {% else %}
                 <a class="btn btn-primary btn-lg bg-dark" href="/login" style="opacity:1">Login</a>
                 {% endif %}
-                
             </div>
         </div>
     </div>
@@ -95,4 +94,7 @@
         </div>
     </div>
 </div>
+<footer class="bg-dark fixed-bottom" style="padding-top: 1.5rem;padding-bottom: 1.5rem;position:relative;z-index:1000; border-top:3px solid #FFD700">
+    <div class="container"><p class="m-0 text-center text-white">Bergen Tech - 2024</p></div>
+</footer>
 {%endblock%}
