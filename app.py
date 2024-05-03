@@ -222,18 +222,21 @@ def myclubs():
 @app.route('/stream/<club_name>', methods=['GET','POST'])
 @login_required
 def stream(club_name):
+    # change this to any value
+    max_message_count = 3
+
     #get the id of the club
     club_id = search_clubs(club_name)[0][0]
     #check if the user is an owner of the club
     user_id = session.get('id')
     #ownership of club CHANGE THIS LATER!!!!
     ownership = False
+    messages = get_messages(club_id)
     if request.method == 'GET':
         #determine ownership of club
         if is_club_owner(user_id, club_id):
             ownership = True
         #get the messages of the club to get ready to output
-        messages = get_messages(club_id)
         #need club name just in case of routing?
         return render_template('stream.html', ownership=ownership, messages=messages, club_name=club_name)
     #for now can only make announcements
@@ -246,6 +249,12 @@ def stream(club_name):
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         #post the message into the database
         post_message(user_id, club_id, message, current_time)
+
+        # code that removes messages after reaching a certain limit
+        print('test')
+        if len(messages) > max_message_count:
+            delete_message(club_id,max_message_count)
+
         #redirect to the stream and flash that post has been successful (? hopefully the posts are there? )
         return redirect(url_for('stream', club_name=club_name))
 
